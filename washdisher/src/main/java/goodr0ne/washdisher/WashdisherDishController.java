@@ -10,11 +10,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class WashdisherDishController {
   private static final int MAX_CAPACITY = 20;
   private static final long MAX_DURATION_SECONDS = 5 * 60;
-  private static final long MAX_DURATION = MAX_DURATION_SECONDS * 1000;
   private static WashdisherStatus status = WashdisherStatus.getInstance();
 
   @RequestMapping(value = "/load", method = GET)
   public String loadBlank() {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     return "Please specify items quantity after slash within 1 - "
             + MAX_CAPACITY + " range";
   }
@@ -22,6 +24,9 @@ public class WashdisherDishController {
   //Correctly intercept parsing exceptions for itemsQuantity parameter
   @RequestMapping(value = "/load/{itemsQuantity}", method = GET)
   public String load(@PathVariable int itemsQuantity) {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     if (status.getIsOperational()) {
       return "Washdisher is operational, wait until finish or stop it manually";
     }
@@ -50,6 +55,9 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/unload", method = GET)
   public String unload() {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     int capacity = status.getCapacity();
     if (capacity == 0) {
       return "Washdisher doesn't have any dishes inside";
@@ -72,18 +80,22 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/start", method = GET)
   public String startBlank() {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     if (status.getDuration() < 1) {
       return "Please specify washing time in seconds after slash within 1 - "
               + MAX_DURATION_SECONDS + " range";
     } else {
       if (status.getIsOperational()) {
-        return "Washdisher is already operational";
+        return "Could not resume washing cycle - washdisher is already operational";
       }
       if (status.getCapacity() < 1) {
-        return "Washdisher is empty, load it first";
+        return "Could not resume washing cycle - washdisher is empty, load it first";
       }
       if (status.getIsCleaned()) {
-        return "Washdisher have clean dishes inside, unload it first";
+        return "Could not resume washing cycle - " +
+                "washdisher have clean dishes inside, unload it first";
       }
       status.setIsOperational(true);
       status.saveStatus();
@@ -94,6 +106,9 @@ public class WashdisherDishController {
   //Correctly intercept parsing exceptions for seconds parameter
   @RequestMapping(value = "/start/{seconds}", method = GET)
   public String start(@PathVariable int seconds) {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     if (status.getIsOperational()) {
       return "Washdisher is already operational";
     }
@@ -124,6 +139,9 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/stop", method = GET)
   public String stop() {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     if (!status.getIsOperational()) {
       return "Washdisher is not operational and could not be stopped";
     }

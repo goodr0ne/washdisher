@@ -15,12 +15,15 @@ public class WashdisherStatusController {
 
   @RequestMapping(value = "/status", method = GET)
   public String status() {
+    if (!WashdisherStatus.IS_TURN_ON()) {
+      return WashdisherPowerController.POWER_OFF_MESSAGE;
+    }
     checkStatus();
     return gson.toJson(WashdisherStatus.getInstance());
   }
 
   private void checkStatus() {
-    if (!status.getIsOperational() || status.getIsCleaned()) {
+    if (!WashdisherStatus.IS_TURN_ON() || !status.getIsOperational() || status.getIsCleaned()) {
       return;
     }
     long time = System.currentTimeMillis();
@@ -31,7 +34,7 @@ public class WashdisherStatusController {
       long totalTime = washedTime + (time - lastCheck);
       status.setWashedTime(totalTime);
       if (totalTime > status.getDuration()) {
-        status.setIsCleaned(true);
+        status.setIsCleaned();
         status.setIsOperational(false);
       }
     }

@@ -1,6 +1,7 @@
 package goodr0ne.washdisher;
 
-public class WashdisherStatus {
+class WashdisherStatus {
+  private static boolean isTurnOn = false;
   private int capacity;
   private int duration;
   private long lastCheckTime;
@@ -10,7 +11,7 @@ public class WashdisherStatus {
 
   private static WashdisherStatus instance = new WashdisherStatus();
 
-  public static WashdisherStatus getInstance() {
+  static WashdisherStatus getInstance() {
     return instance;
   }
 
@@ -24,61 +25,69 @@ public class WashdisherStatus {
     }
   }
 
-
-  public synchronized boolean isLoaded() {
-    return capacity > 0;
+  synchronized static void TURN_OFF() {
+    instance = new WashdisherStatus();
+    WashdisherStatus.isTurnOn = false;
   }
 
-  public synchronized boolean getIsCleaned() {
+  synchronized static void TURN_ON() {
+    WashdisherStatus.isTurnOn = true;
+  }
+
+  synchronized static boolean IS_TURN_ON() {
+    return isTurnOn;
+  }
+
+  synchronized boolean getIsCleaned() {
     return isCleaned;
   }
 
-  public synchronized void setIsCleaned(boolean isCleaned) {
-    this.isCleaned = isCleaned;
+  synchronized void setIsCleaned() {
+    this.isCleaned = true;
   }
 
-  public synchronized boolean getIsOperational() {
+  synchronized boolean getIsOperational() {
     return isOperational;
   }
 
-  public synchronized void setIsOperational(boolean isOperational) {
+  synchronized void setIsOperational(boolean isOperational) {
     this.isOperational = isOperational;
   }
 
-  public synchronized int getCapacity() {
+  synchronized int getCapacity() {
     return capacity;
   }
 
-  public synchronized void setCapacity(int capacity) {
+  synchronized void setCapacity(int capacity) {
     this.capacity = capacity;
   }
 
-  public synchronized int getDuration() {
+  synchronized int getDuration() {
     return duration;
   }
 
-  public synchronized void setDuration(int duration) {
+  synchronized void setDuration(int duration) {
     this.duration = duration;
   }
 
-  public synchronized long getLastCheckTime() {
+  synchronized long getLastCheckTime() {
     return lastCheckTime;
   }
 
-  public synchronized void setLastCheckTime(long lastCheckTime) {
+  synchronized void setLastCheckTime(long lastCheckTime) {
     this.lastCheckTime = lastCheckTime;
   }
 
-  public synchronized long getWashedTime() {
+  synchronized long getWashedTime() {
     return washedTime;
   }
 
-  public synchronized void setWashedTime(long washedTime) {
+  synchronized void setWashedTime(long washedTime) {
     this.washedTime = washedTime;
   }
 
   //stub for further db usage
-  public synchronized void saveStatus() {
+  synchronized void saveStatus() {
     System.out.println("Trying to save WashdisherStatus to db");
   }
 
@@ -88,7 +97,7 @@ public class WashdisherStatus {
     throw new Exception();
   }
 
-  public synchronized void wipe() {
+  synchronized void wipe() {
     capacity = 0;
     duration = 0;
     washedTime = 0;
