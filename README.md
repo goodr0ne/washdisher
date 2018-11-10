@@ -1,10 +1,11 @@
 # Washdisher
-To wash all your dishes and not to dish all your washes!
+Dishwasher is reinvented with washdisher!
 
 # Installation
 Clone project into Idea and click run
 
 # Operate
+curl localhost              <br>
 curl localhost/turn_on      <br>
 curl localhost/load         <br>
 curl localhost/start        <br>

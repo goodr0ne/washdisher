@@ -4,22 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class WashdisherController {
-
-  @RequestMapping("/")
-  public String index() {
-    return "Welcome to Washdisher!";
-  }
-
-  @RequestMapping("/turn_on")
-  public String turnOn() {
-    return "Washdisher is turned on";
-  }
-
-  @RequestMapping("/turn_off")
-  public String turnOff() {
-    return "Washdisher is turned off";
-  }
+public class WashdisherDishController {
 
   @RequestMapping("/load")
   public String load() {
@@ -39,10 +24,5 @@ public class WashdisherController {
   @RequestMapping("/stop")
   public String stop() {
     return "Washdisher is stopped";
-  }
-
-  @RequestMapping("/check_status")
-  public String checkStatus() {
-    return "Washdisher is operational";
   }
 }
