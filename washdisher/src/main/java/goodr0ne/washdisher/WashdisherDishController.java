@@ -14,6 +14,7 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/load", method = GET)
   public String loadBlank() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -24,6 +25,7 @@ public class WashdisherDishController {
   //Correctly intercept parsing exceptions for itemsQuantity parameter
   @RequestMapping(value = "/load/{itemsQuantity}", method = GET)
   public String load(@PathVariable int itemsQuantity) {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -55,6 +57,7 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/unload", method = GET)
   public String unload() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -80,6 +83,7 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/start", method = GET)
   public String startBlank() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -106,6 +110,7 @@ public class WashdisherDishController {
   //Correctly intercept parsing exceptions for seconds parameter
   @RequestMapping(value = "/start/{seconds}", method = GET)
   public String start(@PathVariable int seconds) {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -139,6 +144,7 @@ public class WashdisherDishController {
 
   @RequestMapping(value = "/stop", method = GET)
   public String stop() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }

@@ -21,7 +21,7 @@ public class WashdisherPowerController {
 
   @RequestMapping(value = "/help", method = GET)
   public String help() {
-    return "Here is the list of possible operations:                       <br>" +
+    return  "Here is the list of possible operations:                      <br>" +
             "/index or just localhost - &emsp; welcome message             <br>" +
             "/turn_on &emsp;&emsp;&emsp;&emsp;&emsp;&ensp; "                     +
             "- &emsp; turns washdisher power on, status will be restored   <br>" +
@@ -49,7 +49,8 @@ public class WashdisherPowerController {
       return "Washdisher is already power on and ready for your commands";
     }
     WashdisherStatus.TURN_ON();
-    return "Washdisher is turned on";
+    return "Washdisher is turned on,<br>lights are blinking and engines are shaking, " +
+            "<br>you can insert your dishes needed to be washed!";
   }
 
   @RequestMapping(value = "/turn_off", method = GET)

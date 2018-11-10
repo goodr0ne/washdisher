@@ -11,7 +11,7 @@ class WashdisherStatus {
 
   private static WashdisherStatus instance = new WashdisherStatus();
 
-  static WashdisherStatus getInstance() {
+  synchronized static WashdisherStatus getInstance() {
     return instance;
   }
 

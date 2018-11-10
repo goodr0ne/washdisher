@@ -15,6 +15,7 @@ public class WashdisherStatusController {
 
   @RequestMapping(value = "/status", method = GET)
   public String status() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
       return WashdisherPowerController.POWER_OFF_MESSAGE;
     }
@@ -23,6 +24,7 @@ public class WashdisherStatusController {
   }
 
   private void checkStatus() {
+    status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON() || !status.getIsOperational() || status.getIsCleaned()) {
       return;
     }
