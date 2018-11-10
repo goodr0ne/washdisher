@@ -2,7 +2,8 @@ package goodr0ne.washdisher;
 
 public class WashdisherStatus {
   private int capacity;
-  private long duration;
+  private int duration;
+  private long lastCheckTime;
   private long washedTime;
   private boolean isOperational;
   private boolean isCleaned;
@@ -36,6 +37,14 @@ public class WashdisherStatus {
     this.isCleaned = isCleaned;
   }
 
+  public synchronized boolean getIsOperational() {
+    return isOperational;
+  }
+
+  public synchronized void setIsOperational(boolean isOperational) {
+    this.isOperational = isOperational;
+  }
+
   public synchronized int getCapacity() {
     return capacity;
   }
@@ -44,10 +53,36 @@ public class WashdisherStatus {
     this.capacity = capacity;
   }
 
+  public synchronized int getDuration() {
+    return duration;
+  }
+
+  public synchronized void setDuration(int duration) {
+    this.duration = duration;
+  }
+
+  public synchronized long getLastCheckTime() {
+    return lastCheckTime;
+  }
+
+  public synchronized void setLastCheckTime(long lastCheckTime) {
+    this.lastCheckTime = lastCheckTime;
+  }
+
+  public synchronized long getWashedTime() {
+    return washedTime;
+  }
+
+  public synchronized void setWashedTime(long washedTime) {
+    this.washedTime = washedTime;
+  }
+
+  //stub for further db usage
   public synchronized void saveStatus() {
     System.out.println("Trying to save WashdisherStatus to db");
   }
 
+  //stub for further db usage
   private synchronized void retrieveStatus() throws Exception {
     System.out.println("Trying to retrieve WashdisherStatus stored in db");
     throw new Exception();
@@ -57,5 +92,9 @@ public class WashdisherStatus {
     capacity = 0;
     duration = 0;
     washedTime = 0;
+    lastCheckTime = 0;
+    isCleaned = false;
+    isOperational = false;
+    saveStatus();
   }
 }
