@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 
+/**
+ * Background thread class, perform washdisher status saving in cloud task
+ */
 public class WashdisherSaveStatusThread implements Runnable {
   private static Gson gson = new Gson();
 

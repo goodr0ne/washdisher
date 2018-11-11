@@ -5,6 +5,11 @@ import org.bson.Document;
 
 import java.util.Objects;
 
+/**
+ * Washdisher data class, designed as singleton real-time system data access point.
+ * Use WashdisherDBConnector upon instance creation stage for possible retrieval
+ * of stored washdisher status data in mongodb atlas cloud service
+ */
 class WashdisherStatus {
   private static boolean isTurnOn = false;
   private int capacity;

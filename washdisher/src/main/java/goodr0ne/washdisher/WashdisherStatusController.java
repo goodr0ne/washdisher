@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+/**
+ * Controller for maintaining http request of retrieve current washdisher status action.
+ * Also used by background check status quartz tasks for updating current washing status.
+ */
 @RestController
 public class WashdisherStatusController {
   private static Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+/**
+ * Controller for maintaining http requests of actions related with washdisher
+ * power management operations. Help instructions also could be retrieved here
+ * Full list of actions: index, help, turn on, turn off.
+ * Initialization of quartz scheduler also placed here.
+ */
 @RestController
 public class WashdisherPowerController {
   static final String POWER_OFF_MESSAGE = "You are pressing the button " +

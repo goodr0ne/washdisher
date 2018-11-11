@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+/**
+ * Controller for maintaining http requests of actions directly related
+ * to dishes washing operations. Full list of actions:
+ * load, unload, start, stop
+ */
 @RestController
 public class WashdisherDishController {
   private static final int MAX_CAPACITY = 20;
