@@ -1,7 +1,6 @@
 package goodr0ne.washdisher;
 
 import com.google.gson.JsonObject;
-import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 
 import java.util.Objects;
@@ -94,12 +93,11 @@ class WashdisherStatus {
   private void retrieveStatus() {
     System.out.println("Trying to retrieve Washdisher status stored in db");
     try {
-      MongoCollection<Document> collection = WashdisherBDConnector.getInstance().getCollection();
-      restoreFromDocument(Objects.requireNonNull(collection.find().first()));
+      Document storedStatus = WashdisherBDConnector.getInstance().retrieveStatusFromCloud();
+      restoreFromDocument(Objects.requireNonNull(storedStatus));
       System.out.println("Washdisher status successfully restored!");
     } catch (Exception e) {
       System.out.println("Washdisher status restoring problems - " + e.toString());
-      e.printStackTrace();
     }
   }
 

@@ -30,4 +30,8 @@ class WashdisherBDConnector {
   MongoCollection<Document> getCollection() {
     return collection;
   }
+
+  Document retrieveStatusFromCloud() {
+    return getCollection().find().first();
+  }
 }
