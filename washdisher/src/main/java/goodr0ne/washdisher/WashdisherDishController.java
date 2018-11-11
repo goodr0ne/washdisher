@@ -50,7 +50,7 @@ public class WashdisherDishController {
     }
     status.wipe();
     status.setCapacity(capacity + itemsQuantity);
-    status.saveStatus();
+    new Thread(new WashdisherSaveStatusThread()).start();
     return itemsQuantity + " items was successfully loaded into Washdisher, " +
             "current capacity is " + (capacity + itemsQuantity);
   }
@@ -71,7 +71,7 @@ public class WashdisherDishController {
     }
     boolean isCleaned = status.getIsCleaned();
     status.wipe();
-    status.saveStatus();
+    new Thread(new WashdisherSaveStatusThread()).start();
     String output = capacity + " items was unloaded from washdisher";
     if (isCleaned) {
       output = output + ", they are clean and shiny!";
@@ -102,7 +102,7 @@ public class WashdisherDishController {
                 "washdisher have clean dishes inside, unload it first";
       }
       status.setIsOperational(true);
-      status.saveStatus();
+      new Thread(new WashdisherSaveStatusThread()).start();
       return "resuming last washing cycle...";
     }
   }
@@ -138,7 +138,7 @@ public class WashdisherDishController {
     status.setIsOperational(true);
     status.setDuration(seconds * 1000);
     status.setWashedTime(0);
-    status.saveStatus();
+    new Thread(new WashdisherSaveStatusThread()).start();
     return "Washdisher is started";
   }
 
@@ -152,7 +152,7 @@ public class WashdisherDishController {
       return "Washdisher is not operational and could not be stopped";
     }
     status.setIsOperational(false);
-    status.saveStatus();
+    new Thread(new WashdisherSaveStatusThread()).start();
     return "Washdisher is stopped";
   }
 }
