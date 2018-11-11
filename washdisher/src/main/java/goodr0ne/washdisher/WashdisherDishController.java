@@ -17,6 +17,10 @@ public class WashdisherDishController {
   private static final long MAX_DURATION_SECONDS = 5 * 60;
   private static WashdisherStatus status = WashdisherStatus.getInstance();
 
+  /**
+   * Correctly proceed /load request without quantity parameter
+   * @return String with tips about possible /load interaction usage
+   */
   @RequestMapping(value = "/load", method = GET)
   public String loadBlank() {
     status = WashdisherStatus.getInstance();
@@ -27,8 +31,15 @@ public class WashdisherDishController {
             + MAX_CAPACITY + " range";
   }
 
-  //Correctly intercept parsing exceptions for itemsQuantity parameter
+  /**
+   * /load/{itemsQuantity} request will try to add specified number of items to washdisher.
+   * If total capacity will be outlimited, then no items will be added to washdisher.
+   * Cannot be launched if washdisher is currently washing dishes or has some clean dishes inside.
+   * @param itemsQuantity expected integer with desired items quantity to be washed, 1-20 expected
+   * @return String with interaction output
+   */
   @RequestMapping(value = "/load/{itemsQuantity}", method = GET)
+  //Correctly intercept parsing exceptions for itemsQuantity parameter
   public String load(@PathVariable int itemsQuantity) {
     status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON()) {
@@ -60,6 +71,11 @@ public class WashdisherDishController {
             "current capacity is " + (capacity + itemsQuantity);
   }
 
+  /**
+   * /unload request will try to unload all washed or not washed dishes inside washdisher.
+   * Cannot be launched if washdisher is currently washing dishes or is empty.
+   * @return String with interaction output
+   */
   @RequestMapping(value = "/unload", method = GET)
   public String unload() {
     status = WashdisherStatus.getInstance();
@@ -86,6 +102,11 @@ public class WashdisherDishController {
     return output;
   }
 
+  /**
+   * blank /start request will try to restore manually stopped washing operation
+   * and will fail in other conditions
+   * @return String with interaction output
+   */
   @RequestMapping(value = "/start", method = GET)
   public String startBlank() {
     status = WashdisherStatus.getInstance();
@@ -112,6 +133,13 @@ public class WashdisherDishController {
     }
   }
 
+  /**
+   * /start/{seconds} request will try to start washing dishes operation.
+   * Cannot be launched if washdisher is already washing dishes,
+   * is empty or have clean dishes inside.
+   * @param seconds integer with desired length of washing operation, 1-300 expected
+   * @return String with interaction output
+   */
   //Correctly intercept parsing exceptions for seconds parameter
   @RequestMapping(value = "/start/{seconds}", method = GET)
   public String start(@PathVariable int seconds) {
@@ -147,6 +175,10 @@ public class WashdisherDishController {
     return "Washdisher is started";
   }
 
+  /**
+   * /stop operation will manually stop current washing operation. Fail otherwise.
+   * @return String with interaction output
+   */
   @RequestMapping(value = "/stop", method = GET)
   public String stop() {
     status = WashdisherStatus.getInstance();

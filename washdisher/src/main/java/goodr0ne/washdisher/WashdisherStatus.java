@@ -25,6 +25,10 @@ class WashdisherStatus {
     return instance;
   }
 
+  /**
+   * Upon instance creation will try to recover stored status data from mongo cloud db.
+   * Fill status with default zero data if recovery fails.
+   */
   private WashdisherStatus() {
     try {
       retrieveStatus();
@@ -106,6 +110,11 @@ class WashdisherStatus {
     }
   }
 
+  /**
+   * Try to fill status data with document, expected mongo bson doc data as input.
+   * Due to data type parsing problems in mongo bson doc there are a lot of try blocks.
+   * @param doc Bson Document with stored status data expected
+   */
   private void restoreFromDocument(Document doc) {
     try {
       capacity = doc.getInteger("capacity");
@@ -147,6 +156,11 @@ class WashdisherStatus {
     isOperational = doc.getBoolean("isOperational");
   }
 
+  /**
+   * Parse current status data for storage purposes.
+   * Power status is excepted from the process.
+   * @return json string with current status data
+   */
   JsonObject getJson() {
     JsonObject statusObj = new JsonObject();
     statusObj.addProperty("capacity", capacity);
@@ -158,6 +172,9 @@ class WashdisherStatus {
     return statusObj;
   }
 
+  /**
+   * Fill up status with zero-data
+   */
   void wipe() {
     capacity = 0;
     duration = 0;

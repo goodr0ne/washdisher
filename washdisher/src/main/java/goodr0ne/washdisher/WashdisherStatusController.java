@@ -16,6 +16,12 @@ public class WashdisherStatusController {
   private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private static WashdisherStatus status = WashdisherStatus.getInstance();
 
+  /**
+   * /status request outputs current washdisher status in form of json string.
+   * Accessible always except washdisher is powered off.
+   * Also launches check status operation for processing ongoing washing process.
+   * @return String with interaction output in json form for success operation
+   */
   @RequestMapping(value = "/status", method = GET)
   public String status() {
     status = WashdisherStatus.getInstance();
@@ -26,6 +32,11 @@ public class WashdisherStatusController {
     return gson.toJson(WashdisherStatus.getInstance());
   }
 
+  /**
+   * Check status operation used by background quartz task and manually by /status request.
+   * Process current washing operation, if washdisher is in washing state.
+   * If previous check was called recently, will add time to actually washed time amount.
+   */
   static void checkStatus() {
     status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON() || !status.getIsOperational() || status.getIsCleaned()) {

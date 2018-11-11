@@ -22,6 +22,10 @@ public class WashdisherPowerController {
   static final String POWER_OFF_MESSAGE = "You are pressing the button " +
           "but nothing happens - seems that washdisher is power off";
 
+  /**
+   * welcome message, placed upon /index or core host url requests
+   * @return String with welcome message
+   */
   @RequestMapping(value = {"/", "/index"}, method = GET)
   public String index() {
     if (!WashdisherStatus.IS_TURN_ON()) {
@@ -31,6 +35,10 @@ public class WashdisherPowerController {
     return "Welcome to Washdisher! See instruction to get it started (via /help url)";
   }
 
+  /**
+   * accessed via /help request list of all possible operations
+   * @return String with all operations instruction
+   */
   @RequestMapping(value = "/help", method = GET)
   public String help() {
     return  "Here is the list of possible operations:                      <br>" +
@@ -55,6 +63,7 @@ public class WashdisherPowerController {
             "- &emsp; view this instruction                                <br>";
   }
 
+  //initialization of quartz check washdisher status task
   @Bean
   public JobDetail jobDetail() {
     return JobBuilder.newJob().ofType(WashdisherCheckStatusJob.class)
@@ -64,6 +73,7 @@ public class WashdisherPowerController {
             .build();
   }
 
+  //this task triggered each second
   @Bean
   public Trigger trigger(JobDetail job) {
     return TriggerBuilder.newTrigger().forJob(job)
@@ -73,6 +83,12 @@ public class WashdisherPowerController {
             .build();
   }
 
+  /**
+   * /turn_on interaction will try to power on washdisher. Washdisher is turned off by default.
+   * Turned off washdisher will be unavailable for use by any operation, except /help and /turn_on.
+   * Turn on operation also will try to recover stored washdisher status from mongo cloud db.
+   * @return String with output
+   */
   @RequestMapping(value = "/turn_on", method = GET)
   public String turnOn() {
     if (WashdisherStatus.IS_TURN_ON()) {
@@ -83,6 +99,12 @@ public class WashdisherPowerController {
             "<br>you can insert your dishes needed to be washed!";
   }
 
+  /**
+   * /turn_off interaction will shut down washdisher. Washdisher is turned off by default.
+   * Turned off washdisher will be unavailable for use by any operation, except /help and /turn_on.
+   * Turn off operation also will erase all current non-saved to cloud status data.
+   * @return String with output
+   */
   @RequestMapping(value = "/turn_off", method = GET)
   public String turnOff() {
     if (!WashdisherStatus.IS_TURN_ON()) {
