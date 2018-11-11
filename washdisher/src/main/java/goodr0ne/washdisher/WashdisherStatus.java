@@ -1,7 +1,23 @@
 package goodr0ne.washdisher;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+
+import java.util.Objects;
+
 class WashdisherStatus {
   private static boolean isTurnOn = false;
+  private static final String DB_URL = "washdisherdb-id6qs.azure.mongodb.net/test" +
+          "?retryWrites=true";
+  private static final String DB_USERNAME = "WashdisherDBUser";
+  private static final String DB_PASSWORD = "ectoplasm_47";
+  private static Gson gson = new Gson();
   private int capacity;
   private int duration;
   private long lastCheckTime;
@@ -88,13 +104,88 @@ class WashdisherStatus {
 
   //stub for further db usage
   synchronized void saveStatus() {
-    System.out.println("Trying to save WashdisherStatus to db");
+    try {
+      MongoClientURI uri = new MongoClientURI(
+              "mongodb+srv://" + DB_USERNAME + ":" + DB_PASSWORD + "@" + DB_URL);
+      MongoClient client = new MongoClient(uri);
+      MongoDatabase db = client.getDatabase("washdisherdb");
+      MongoCollection<Document> collection = db.getCollection("washdisher_status");
+      Document statusDoc = Document.parse(gson.toJson(getJson()));
+      collection.drop();
+      collection.insertOne(statusDoc);
+    } catch (Exception e) {
+      System.out.println("Saving washdisher status - exception arrived, " + e.toString());
+    }
   }
 
   //stub for further db usage
-  private synchronized void retrieveStatus() throws Exception {
-    System.out.println("Trying to retrieve WashdisherStatus stored in db");
-    throw new Exception();
+  private synchronized void retrieveStatus() {
+    System.out.println("Trying to retrieve Washdisher status stored in db");
+    try {
+      MongoClientURI uri = new MongoClientURI(
+              "mongodb+srv://" + DB_USERNAME + ":" + DB_PASSWORD
+                      + "@washdisherdb-id6qs.azure.mongodb.net/test?retryWrites=true");
+      MongoClient client = new MongoClient(uri);
+      MongoDatabase db = client.getDatabase("washdisherdb");
+      MongoCollection<Document> collection = db.getCollection("washdisher_status");
+      restoreFromDocument(Objects.requireNonNull(collection.find().first()));
+      System.out.println("Washdisher status successfully restored!");
+    } catch (Exception e) {
+      System.out.println("Washdisher status restoring problems - " + e.toString());
+      e.printStackTrace();
+    }
+  }
+
+  private void restoreFromDocument(Document doc) {
+    try {
+      capacity = doc.getInteger("capacity");
+    } catch (Exception e) {
+      capacity = Integer.parseInt(doc.getInteger("capacity").toString());
+    }
+    try {
+      duration = doc.getInteger("duration");
+    } catch (Exception e) {
+      duration = Integer.parseInt(doc.getInteger("duration").toString());
+    }
+    try {
+      washedTime = doc.getLong("washedTime");
+    } catch (Exception e) {
+      try {
+        washedTime = Long.parseLong(doc.getLong("washedTime").toString());
+      } catch (Exception ex) {
+        try {
+          washedTime = doc.getInteger("washedTime");
+        } catch (Exception exe) {
+          washedTime = Integer.parseInt(doc.getInteger("washedTime").toString());
+        }
+      }
+    }
+    try {
+      lastCheckTime = doc.getLong("lastCheckTime");
+    } catch (Exception e) {
+      try {
+        lastCheckTime = Long.parseLong(doc.getLong("lastCheckTime").toString());
+      } catch (Exception ex) {
+        try {
+          lastCheckTime = doc.getInteger("lastCheckTime");
+        } catch (Exception exe) {
+          lastCheckTime = Integer.parseInt(doc.getInteger("lastCheckTime").toString());
+        }
+      }
+    }
+    isCleaned = doc.getBoolean("isCleaned");
+    isOperational = doc.getBoolean("isOperational");
+  }
+
+  private JsonObject getJson() {
+    JsonObject statusObj = new JsonObject();
+    statusObj.addProperty("capacity", capacity);
+    statusObj.addProperty("duration", duration);
+    statusObj.addProperty("washedTime", washedTime);
+    statusObj.addProperty("lastCheckTime", lastCheckTime);
+    statusObj.addProperty("isCleaned", isCleaned);
+    statusObj.addProperty("isOperational", isOperational);
+    return statusObj;
   }
 
   synchronized void wipe() {

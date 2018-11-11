@@ -1,8 +1,14 @@
 package goodr0ne.washdisher;
 
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
@@ -41,6 +47,24 @@ public class WashdisherPowerController {
             "- &emsp; stops current washing cycle if it's running          <br>" +
             "/help &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;&nbsp; "            +
             "- &emsp; view this instruction                                <br>";
+  }
+
+  @Bean
+  public JobDetail jobDetail() {
+    return JobBuilder.newJob().ofType(WashdisherCheckStatusJob.class)
+            .storeDurably()
+            .withIdentity("Washdisher_Check_Status_Job_Detail")
+            .withDescription("Watch how dishes washed...")
+            .build();
+  }
+
+  @Bean
+  public Trigger trigger(JobDetail job) {
+    return TriggerBuilder.newTrigger().forJob(job)
+            .withIdentity("Washdisher_Check_Status_Job_Trigger")
+            .withDescription("You just want to be sure that everything goes well...")
+            .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(1))
+            .build();
   }
 
   @RequestMapping(value = "/turn_on", method = GET)

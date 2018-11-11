@@ -23,7 +23,7 @@ public class WashdisherStatusController {
     return gson.toJson(WashdisherStatus.getInstance());
   }
 
-  private void checkStatus() {
+  static synchronized void checkStatus() {
     status = WashdisherStatus.getInstance();
     if (!WashdisherStatus.IS_TURN_ON() || !status.getIsOperational() || status.getIsCleaned()) {
       return;
