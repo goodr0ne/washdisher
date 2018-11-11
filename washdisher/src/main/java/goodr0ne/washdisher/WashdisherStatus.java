@@ -162,6 +162,5 @@ class WashdisherStatus {
     lastCheckTime = 0;
     isCleaned = false;
     isOperational = false;
-    new Thread(new WashdisherSaveStatusThread()).start();
   }
 }

@@ -9,7 +9,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 public class WashdisherStatusController {
-  private static long CHECK_FAIL_TIME_LIMIT = 10 * 1000;
   private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
   private static WashdisherStatus status = WashdisherStatus.getInstance();
 
@@ -31,6 +30,7 @@ public class WashdisherStatusController {
     long time = System.currentTimeMillis();
     long lastCheck = status.getLastCheckTime();
     status.setLastCheckTime(time);
+    long CHECK_FAIL_TIME_LIMIT = 10 * 1000;
     if ((time - lastCheck) < CHECK_FAIL_TIME_LIMIT) {
       long washedTime = status.getWashedTime();
       long totalTime = washedTime + (time - lastCheck);
