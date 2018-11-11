@@ -1,20 +1,13 @@
 package goodr0ne.washdisher;
 
 import com.google.gson.JsonObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 import java.util.Objects;
 
 class WashdisherStatus {
   private static boolean isTurnOn = false;
-  private static final String DB_URL = "washdisherdb-id6qs.azure.mongodb.net/test" +
-          "?retryWrites=true";
-  private static final String DB_USERNAME = "WashdisherDBUser";
-  private static final String DB_PASSWORD = "ectoplasm_47";
   private int capacity;
   private int duration;
   private long lastCheckTime;
@@ -101,11 +94,7 @@ class WashdisherStatus {
   private void retrieveStatus() {
     System.out.println("Trying to retrieve Washdisher status stored in db");
     try {
-      MongoClientURI uri = new MongoClientURI(
-              "mongodb+srv://" + DB_USERNAME + ":" + DB_PASSWORD + "@" + DB_URL);
-      MongoClient client = new MongoClient(uri);
-      MongoDatabase db = client.getDatabase("washdisherdb");
-      MongoCollection<Document> collection = db.getCollection("washdisher_status");
+      MongoCollection<Document> collection = WashdisherBDConnector.getInstance().getCollection();
       restoreFromDocument(Objects.requireNonNull(collection.find().first()));
       System.out.println("Washdisher status successfully restored!");
     } catch (Exception e) {
